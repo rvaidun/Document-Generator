@@ -11,9 +11,10 @@ import paraphrase
 import wikipedia
 import sys
 import os
-
-
+import names
+import random
 def createDocument(text, title):
+    classNames = ["HISTORY 100," "RELIGION 100", "HISTORY 101,", "HIST 100", "HISTORY 150", "REL 101", "RELIGION 100"]
     document = Document()
     # Name
     obj_styles = document.styles
@@ -23,8 +24,8 @@ def createDocument(text, title):
     obj_font.name = 'Times New Roman'
     name = document.add_paragraph()
     className = document.add_paragraph()
-    name.add_run("John Doe", style='NameStyle')
-    className.add_run("RANDOM CLASS 100", style='NameStyle')
+    name.add_run(names.get_full_name(), style='NameStyle')
+    className.add_run(random.choice(classNames), style='NameStyle')
     # Heading
     obj_styles = document.styles
     obj_charstyle = obj_styles.add_style(

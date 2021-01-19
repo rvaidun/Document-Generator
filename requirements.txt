@@ -3,3 +3,4 @@ bs4
 docx
 nltk
 wikipedia
+python-docx
