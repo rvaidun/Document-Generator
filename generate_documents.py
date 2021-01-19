@@ -13,8 +13,11 @@ import sys
 import os
 import names
 import random
-def createDocument(text, title):
-    classNames = ["HISTORY 100," "RELIGION 100", "HISTORY 101,", "HIST 100", "HISTORY 150", "REL 101", "RELIGION 100"]
+import json
+with open('config.json') as f:
+    config = json.load(f)
+def createDocument(text, title, folder):
+    classNames = config["class_names"]
     document = Document()
     # Name
     obj_styles = document.styles
@@ -39,42 +42,52 @@ def createDocument(text, title):
     # Content
     paragraph = document.add_paragraph(text)
 
-    document.save(f'./{sys.argv[1]}/{title.strip()}.docx')
+    document.save('./' + folder + '/' + title.strip() + '.docx')
 
 
 if __name__ == "__main__":
-    try:
-        page = wikipedia.page(sys.argv[1], auto_suggest=False)
-        print(f"The url for page is {page.url}")
-    except wikipedia.exceptions.PageError:
-        print(
-            f" The page {sys.argv[1]} could not be found. Please try another page")
-    page_content = page.content.split("== See also ==")[0]
+    amt = int(sys.argv[1])
+    pages = config["wiki_articles"]
+    generated = 0
+    while generated < amt:
+        try:
+            page = wikipedia.page(random.choice(pages), auto_suggest=False)
+            print("The url for page is " + page.url)
+        except wikipedia.exceptions.PageError:
+            print("One of the pages could not be found. Please check the pages again")
+        page_content = page.content.split("== See also ==")[0]
+        page_content = page_content.strip()
+        page_content = sent_tokenize(page_content)
+        chunked = []
+        count = 0
+        curstr = ""
+        print("Paraphrasing Chunk "+ str(len(chunked)))
+        for x in page_content:
+            if count == config["num_sentences"]:
+                count = 0
+                chunked.append(curstr)
+                print("Paraphrasing Chunk " + str(len(chunked)))
+                curstr = ""
+            curstr += paraphrase.paraphrase(x)
+            count += 1
+        chunked.append(curstr)
+        count = 0
+        if os.path.exists(page.title) == False:
+            try:
+                os.mkdir("./" + page.title)
+            except OSError:
+                print("Creation of the directory failed")
 
-    page_content = page_content.strip()
-    page_content = sent_tokenize(page_content)
-    chunked = []
-    count = 0
-    curstr = ""
-    print(f"Paraphrasing Chunk {len(chunked)}")
-    for x in page_content:
-        if count == 25:
-            count = 0
-            chunked.append(curstr)
-            print(f"Paraphrasing Chunk {len(chunked)}")
-            curstr = ""
-        curstr += paraphrase.paraphrase(x)
-        count += 1
-    chunked.append(curstr)
-    count = 0
-    try:
-        os.mkdir(f"./{sys.argv[1]}")
-    except OSError:
-        print("Creation of the directory failed")
-    else:
         print("Successfully created the directory")
-    for x in chunked:
-        print(f"Writing chunk {count} to word doc")
-        title = " ".join(nltk.word_tokenize(x)[0:3])
-        createDocument(x, title)
-        count += 1
+        for x in chunked:
+            print("Writing chunk " + str(count) +" to word doc")
+            title = " ".join(nltk.word_tokenize(x)[0:3])
+            createDocument(x, title, page.title)
+            count += 1
+            generated += 1
+            if generated > amt:
+                break
+            else:
+                print("Made " + str(generated) + " docs with this article so far. Need " + str(amt-generated) + " docs more.")
+    print("Successfully generated " + str(amt) + " documents. Thank you!")
+            
