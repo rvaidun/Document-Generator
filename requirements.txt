@@ -4,3 +4,4 @@ docx
 nltk
 wikipedia
 python-docx
+names
