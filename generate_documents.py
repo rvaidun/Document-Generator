@@ -14,10 +14,10 @@ import os
 import names
 import random
 import json
-with open('config.json') as f:
-    config = json.load(f)
-def createDocument(text, title, folder):
-    classNames = config["class_names"]
+import argparse
+
+
+def createDocument(text, title, folder, class_names):
     document = Document()
     # Name
     obj_styles = document.styles
@@ -28,7 +28,7 @@ def createDocument(text, title, folder):
     name = document.add_paragraph()
     className = document.add_paragraph()
     name.add_run(names.get_full_name(), style='NameStyle')
-    className.add_run(random.choice(classNames), style='NameStyle')
+    className.add_run(random.choice(class_names), style='NameStyle')
     # Heading
     obj_styles = document.styles
     obj_charstyle = obj_styles.add_style(
@@ -46,24 +46,48 @@ def createDocument(text, title, folder):
 
 
 if __name__ == "__main__":
-    amt = int(sys.argv[1])
-    pages = config["wiki_articles"]
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    # add arguments for number of documents to generate and the page to use
+    parser.add_argument("-t", "--title", help="The wikipedia page title to use for generating documents",
+                        type=str, default="Machine Learning")
+    parser.add_argument(
+        "-a", "--amount", help="The amount of documents to generate", default=10, type=int)
+    # add argument for the class names
+    parser.add_argument("-c", "--class_names", help="The class names to use for generating documents",
+                        type=list, default=["CS 1", "CS 2", "CS 3", "CS 4", "CS 5", "CS 6", "CS 7", "CS 8", "CS 9", "CS 10"])
+    parser.add_argument(
+        "-s", "--sentences", help="The number of sentences to use for each chunk", default=5, type=int)
+
+    args = parser.parse_args()
+    amt = args.amount
+    page = args.title
+    num_sentences = args.sentences
+
+    class_names = args.class_names
     generated = 0
     while generated < amt:
         try:
-            page = wikipedia.page(random.choice(pages), auto_suggest=False)
+            page = wikipedia.page(page, auto_suggest=False)
             print("The url for page is " + page.url)
-        except wikipedia.exceptions.PageError:
-            print("One of the pages could not be found. Please check the pages again")
+        except Exception as e:
+            print("There was an error getting the page. Please try again.")
+            print(e)
+            sys.exit(1)
+        # Split the page into chunks of 5 sentences
         page_content = page.content.split("== See also ==")[0]
         page_content = page_content.strip()
         page_content = sent_tokenize(page_content)
+
+        # Generate chunks
         chunked = []
         count = 0
         curstr = ""
-        print("Paraphrasing Chunk "+ str(len(chunked)))
+        print("Paraphrasing Chunk " + str(len(chunked)))
         for x in page_content:
-            if count == config["num_sentences"]:
+            if (len(chunked) >= amt):
+                break
+            if count == num_sentences:
                 count = 0
                 chunked.append(curstr)
                 print("Paraphrasing Chunk " + str(len(chunked)))
@@ -79,15 +103,17 @@ if __name__ == "__main__":
                 print("Creation of the directory failed")
 
         print("Successfully created the directory")
+
+        # Write chunks to word docs
         for x in chunked:
-            print("Writing chunk " + str(count) +" to word doc")
+            print("Writing chunk " + str(count) + " to word doc")
             title = " ".join(nltk.word_tokenize(x)[0:3])
-            createDocument(x, title, page.title)
+            createDocument(x, title, page.title, class_names)
             count += 1
             generated += 1
             if generated > amt:
                 break
             else:
-                print("Made " + str(generated) + " docs with this article so far. Need " + str(amt-generated) + " docs more.")
+                print("Made " + str(generated) + " docs with this article so far. Need " +
+                      str(amt-generated) + " docs more.")
     print("Successfully generated " + str(amt) + " documents. Thank you!")
-            
