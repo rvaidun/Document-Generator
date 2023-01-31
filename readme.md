@@ -10,10 +10,15 @@ You will also need to download [nltk](https://www.nltk.org/) modules. The script
 
 The command below will install all dependencies in requirements.txt and install the modules from nltk
 
+For MacOS:
 ```bash
-pip install -r requirements.txt && python3 nltkdownload.py
+python3 -m pip install -r requirements.txt && python3 nltkdownload.py
 ```
 
+If there are issues installing `lxml` on MacOS the issue may be that xcode command tools is not installed. xcode command tools can be installed with the following command:
+```bash
+xcode-select --install
+```
 ## Usage
 
 ```bash
