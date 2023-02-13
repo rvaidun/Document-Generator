@@ -42,7 +42,7 @@ def createDocument(text, title, folder, class_names):
     # Content
     paragraph = document.add_paragraph(text)
 
-    document.save('./' + folder + '/' + title.strip() + '.docx')
+    document.save("./" + folder + "/" + "".join(i for i in title.strip() if i not in "\/:*?<>|") + ".docx")
 
 
 if __name__ == "__main__":
