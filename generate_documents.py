@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import requests
 from bs4 import BeautifulSoup
 import bs4
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--class_names", help="The class names to use for generating documents",
                         type=list, default=["CS 1", "CS 2", "CS 3", "CS 4", "CS 5", "CS 6", "CS 7", "CS 8", "CS 9", "CS 10"])
     parser.add_argument(
-        "-s", "--sentences", help="The number of sentences to use for each chunk", default=5, type=int)
+        "-s", "--sentences", help="The number of sentences to use for each chunk", default=25, type=int)
 
     args = parser.parse_args()
     amt = args.amount
