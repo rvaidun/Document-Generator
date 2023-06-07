@@ -18,6 +18,72 @@ import json
 import argparse
 
 
+def GenerateBatch(args, batch):
+    amt = args.amount
+    page = args.title
+    num_sentences = args.sentences
+
+    class_names = args.class_names
+    generated = 0
+    while generated < amt:
+        try:
+            page = wikipedia.page(page, auto_suggest=False)
+            print("The url for page is " + page.url)
+        except Exception as e:
+            print("There was an error getting the page. Please try again.")
+            print(e)
+            sys.exit(1)
+        # Split the page into chunks of 5 sentences
+        page_content = page.content.split("== See also ==")[0]
+        page_content = page_content.strip()
+        page_content = sent_tokenize(page_content)
+
+        # Generate chunks
+        chunked = []
+        count = 0
+        curstr = ""
+        print("Paraphrasing Chunk " + str(len(chunked)))
+        for x in page_content:
+            if len(chunked) >= amt:
+                break
+            if count == num_sentences:
+                count = 0
+                chunked.append(curstr)
+                print("Paraphrasing Chunk " + str(len(chunked)))
+                curstr = ""
+            curstr += paraphrase.paraphrase(x)
+            count += 1
+        chunked.append(curstr)
+        count = 0
+        folder = f"output/{batch} {page.title}"
+        if os.path.exists(folder) == False:
+            try:
+                os.mkdir("./" + folder)
+            except OSError:
+                print("Creation of the directory failed")
+
+        print("Successfully created the directory")
+
+        # Write chunks to word docs
+        for i, x in enumerate(chunked):
+            print("Writing chunk " + str(count) + " to word doc")
+            title = " ".join(nltk.word_tokenize(x)[0:3])
+            createDocument(x, title, folder, class_names, doc_no=i + 1)
+            count += 1
+            generated += 1
+            if generated >= amt:
+                break
+            else:
+                print(
+                    "Made "
+                    + str(generated)
+                    + " docs with this article so far. Need "
+                    + str(amt - generated)
+                    + " docs more."
+                )
+    print("Successfully generated " + str(amt) + " documents. Thank you!")
+
+
 def createDocument(text, title, folder, class_names, doc_no):
     document = Document()
     # Name
@@ -67,8 +133,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "-a",
         "--amount",
-        help="The amount of documents to generate",
+        help="The amount of documents to generate in a batch",
         default=10,
+        type=int,
+    )
+    parser.add_argument(
+        "-b",
+        "--batch",
+        help="The number of batches to generate",
+        default=1,
         type=int,
     )
     # add argument for the class names
@@ -99,66 +172,14 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    amt = args.amount
-    page = args.title
-    num_sentences = args.sentences
-
-    class_names = args.class_names
-    generated = 0
-    while generated < amt:
+    batch = args.batch
+    if os.path.exists("output") == False:
         try:
-            page = wikipedia.page(page, auto_suggest=False)
-            print("The url for page is " + page.url)
-        except Exception as e:
-            print("There was an error getting the page. Please try again.")
-            print(e)
-            sys.exit(1)
-        # Split the page into chunks of 5 sentences
-        page_content = page.content.split("== See also ==")[0]
-        page_content = page_content.strip()
-        page_content = sent_tokenize(page_content)
+            os.mkdir("./output")
+        except OSError:
+            print("Creation of the directory failed")
 
-        # Generate chunks
-        chunked = []
-        count = 0
-        curstr = ""
-        print("Paraphrasing Chunk " + str(len(chunked)))
-        for x in page_content:
-            if len(chunked) >= amt:
-                break
-            if count == num_sentences:
-                count = 0
-                chunked.append(curstr)
-                print("Paraphrasing Chunk " + str(len(chunked)))
-                curstr = ""
-            curstr += paraphrase.paraphrase(x)
-            count += 1
-        chunked.append(curstr)
-        count = 0
-        folder = page.title
-        if os.path.exists(folder) == False:
-            try:
-                os.mkdir("./" + folder)
-            except OSError:
-                print("Creation of the directory failed")
-
-        print("Successfully created the directory")
-
-        # Write chunks to word docs
-        for i, x in enumerate(chunked):
-            print("Writing chunk " + str(count) + " to word doc")
-            title = " ".join(nltk.word_tokenize(x)[0:3])
-            createDocument(x, title, folder, class_names, doc_no=i + 1)
-            count += 1
-            generated += 1
-            if generated >= amt:
-                break
-            else:
-                print(
-                    "Made "
-                    + str(generated)
-                    + " docs with this article so far. Need "
-                    + str(amt - generated)
-                    + " docs more."
-                )
-    print("Successfully generated " + str(amt) + " documents. Thank you!")
+    print("Successfully created the directory")
+    for i in range(batch):
+        print("Generating batch " + str(i + 1))
+        GenerateBatch(args, i + 1)
