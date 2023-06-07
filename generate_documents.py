@@ -16,6 +16,7 @@ import names
 import random
 import json
 import argparse
+import shutil
 
 
 def get_parser():
@@ -177,11 +178,13 @@ def createDocument(text, title, folder, class_names, doc_no):
 if __name__ == "__main__":
     args = get_parser()
     batch = args.batch
-    if os.path.exists("output") == False:
-        try:
-            os.mkdir("./output")
-        except OSError:
-            print("Creation of the directory failed")
+    if os.path.exists("output") == True:
+        shutil.rmtree("output")
+        print("Previous output deleted")
+    try:
+        os.mkdir("./output")
+    except OSError:
+        print("Creation of the directory failed")
 
     print("Successfully created the directory")
     for i in range(batch):
