@@ -18,6 +18,62 @@ import json
 import argparse
 
 
+def get_parser():
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    # add arguments for number of documents to generate and the page to use
+    parser.add_argument(
+        "-t",
+        "--title",
+        help="The wikipedia page title to use for generating documents",
+        type=str,
+        default="Machine Learning",
+    )
+    parser.add_argument(
+        "-n",
+        "--number",
+        help="The number of documents to generate in a batch",
+        default=10,
+        type=int,
+    )
+    parser.add_argument(
+        "-b",
+        "--batch",
+        help="The number of batches to generate",
+        default=1,
+        type=int,
+    )
+    # add argument for the class names
+    parser.add_argument(
+        "-c",
+        "--class_names",
+        help="The class names to use for generating documents",
+        type=list,
+        default=[
+            "CS 1",
+            "CS 2",
+            "CS 3",
+            "CS 4",
+            "CS 5",
+            "CS 6",
+            "CS 7",
+            "CS 8",
+            "CS 9",
+            "CS 10",
+        ],
+    )
+    parser.add_argument(
+        "-s",
+        "--sentences",
+        help="The number of sentences to use for each chunk",
+        default=25,
+        type=int,
+    )
+
+    return parser.parse_args()
+
+
 def GenerateBatch(args, batch):
     amt = args.number
     wiki_title = args.title
@@ -119,59 +175,7 @@ def createDocument(text, title, folder, class_names, doc_no):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
-    # add arguments for number of documents to generate and the page to use
-    parser.add_argument(
-        "-t",
-        "--title",
-        help="The wikipedia page title to use for generating documents",
-        type=str,
-        default="Machine Learning",
-    )
-    parser.add_argument(
-        "-n",
-        "--number",
-        help="The number of documents to generate in a batch",
-        default=10,
-        type=int,
-    )
-    parser.add_argument(
-        "-b",
-        "--batch",
-        help="The number of batches to generate",
-        default=1,
-        type=int,
-    )
-    # add argument for the class names
-    parser.add_argument(
-        "-c",
-        "--class_names",
-        help="The class names to use for generating documents",
-        type=list,
-        default=[
-            "CS 1",
-            "CS 2",
-            "CS 3",
-            "CS 4",
-            "CS 5",
-            "CS 6",
-            "CS 7",
-            "CS 8",
-            "CS 9",
-            "CS 10",
-        ],
-    )
-    parser.add_argument(
-        "-s",
-        "--sentences",
-        help="The number of sentences to use for each chunk",
-        default=25,
-        type=int,
-    )
-
-    args = parser.parse_args()
+    args = get_parser()
     batch = args.batch
     if os.path.exists("output") == False:
         try:
