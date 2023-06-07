@@ -20,14 +20,14 @@ import argparse
 
 def GenerateBatch(args, batch):
     amt = args.amount
-    page = args.title
+    wiki_title = args.title
     num_sentences = args.sentences
 
     class_names = args.class_names
     generated = 0
     while generated < amt:
         try:
-            page = wikipedia.page(page, auto_suggest=False)
+            page = wikipedia.page(wiki_title, auto_suggest=False)
             print("The url for page is " + page.url)
         except Exception as e:
             print("There was an error getting the page. Please try again.")
@@ -65,10 +65,10 @@ def GenerateBatch(args, batch):
         print("Successfully created the directory")
 
         # Write chunks to word docs
-        for i, x in enumerate(chunked):
+        for x in chunked:
             print("Writing chunk " + str(count) + " to word doc")
             title = " ".join(nltk.word_tokenize(x)[0:3])
-            createDocument(x, title, folder, class_names, doc_no=i + 1)
+            createDocument(x, title, folder, class_names, doc_no=generated + 1)
             count += 1
             generated += 1
             if generated >= amt:
