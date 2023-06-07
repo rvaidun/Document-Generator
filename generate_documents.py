@@ -19,7 +19,7 @@ import argparse
 
 
 def GenerateBatch(args, batch):
-    amt = args.amount
+    amt = args.number
     wiki_title = args.title
     num_sentences = args.sentences
 
@@ -131,9 +131,9 @@ if __name__ == "__main__":
         default="Machine Learning",
     )
     parser.add_argument(
-        "-a",
-        "--amount",
-        help="The amount of documents to generate in a batch",
+        "-n",
+        "--number",
+        help="The number of documents to generate in a batch",
         default=10,
         type=int,
     )
