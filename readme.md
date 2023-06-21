@@ -22,23 +22,27 @@ xcode-select --install
 ## Usage
 
 ```bash
-usage: generate_documents.py [-h] [-t TITLE] [-a AMOUNT] [-c CLASS_NAMES]
-                             [-s SENTENCES]
+usage: generate_documents.py [-h] [-t TITLE] [-n NUMBER] [-b BATCH]
+                             [-c CLASS_NAMES] [-s SENTENCES]
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -t TITLE, --title TITLE
                         The wikipedia page title to use for generating
                         documents (default: Machine Learning)
-  -a AMOUNT, --amount AMOUNT
-                        The amount of documents to generate (default: 10)
+  -n NUMBER, --number NUMBER
+                        The number of documents to generate in a batch
+                        (default: 10)
+  -b BATCH, --batch BATCH
+                        The number of batches to generate (default: 1)
   -c CLASS_NAMES, --class_names CLASS_NAMES
                         The class names to use for generating documents
                         (default: ['CS 1', 'CS 2', 'CS 3', 'CS 4', 'CS 5', 'CS
                         6', 'CS 7', 'CS 8', 'CS 9', 'CS 10'])
   -s SENTENCES, --sentences SENTENCES
                         The number of sentences to use for each chunk
-                        (default: 5)
+                        (default: 25)
+
 ```
 
 ## Contributing
