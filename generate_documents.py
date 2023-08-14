@@ -49,8 +49,10 @@ def get_parser():
     parser.add_argument(
         "-c",
         "--class_names",
-        help="The class names to use for generating documents",
-        type=list,
+        help="The class names to use for generating documents. \
+              You should parenthesize the class name if it contains white spaces.",
+        nargs="+",
+        type=str,
         default=[
             "CS 1",
             "CS 2",
