@@ -11,14 +11,17 @@ You will also need to download [nltk](https://www.nltk.org/) modules. The script
 The command below will install all dependencies in requirements.txt and install the modules from nltk
 
 For MacOS:
+
 ```bash
 python3 -m pip install -r requirements.txt && python3 nltkdownload.py
 ```
 
 If there are issues installing `lxml` on MacOS the issue may be that xcode command tools is not installed. xcode command tools can be installed with the following command:
+
 ```bash
 xcode-select --install
 ```
+
 ## Usage
 
 ```bash
@@ -36,7 +39,8 @@ optional arguments:
   -b BATCH, --batch BATCH
                         The number of batches to generate (default: 1)
   -c CLASS_NAMES, --class_names CLASS_NAMES
-                        The class names to use for generating documents
+                        The class names to use for generating documents.
+                        You should parenthesize the class name if it contains white spaces.
                         (default: ['CS 1', 'CS 2', 'CS 3', 'CS 4', 'CS 5', 'CS
                         6', 'CS 7', 'CS 8', 'CS 9', 'CS 10'])
   -s SENTENCES, --sentences SENTENCES
