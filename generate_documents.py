@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-import requests
-from bs4 import BeautifulSoup
-import bs4
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.style import WD_STYLE_TYPE
@@ -14,7 +11,6 @@ import sys
 import os
 import names
 import random
-import json
 import argparse
 import shutil
 
@@ -140,7 +136,7 @@ def GenerateBatch(args, batch):
                     + str(amt - generated)
                     + " docs more."
                 )
-    print("Successfully generated " + str(amt) + " documents. Thank you!")
+    print("Successfully generated " + str(amt) + " documents.")
 
 
 def createDocument(text, title, folder, class_names, doc_no):
@@ -157,7 +153,8 @@ def createDocument(text, title, folder, class_names, doc_no):
     className.add_run(random.choice(class_names), style="NameStyle")
     # Heading
     obj_styles = document.styles
-    obj_charstyle = obj_styles.add_style("CommentsStyle", WD_STYLE_TYPE.CHARACTER)
+    obj_charstyle = obj_styles.add_style(
+        "CommentsStyle", WD_STYLE_TYPE.CHARACTER)
     obj_font = obj_charstyle.font
     obj_font.size = Pt(16)
     obj_font.name = "Times New Roman"
