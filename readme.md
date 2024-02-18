@@ -1,6 +1,6 @@
 # Document Generator
 
-Document Generator is a Python3 script to automatically generate documents. This project works by paraphrasing existing wikipedia articles and writing the paraphrased text to a word document that you can upload to coursehero. These documents can be used for various purposes including uploading to Coursehero.
+Document Generator is a project to generate randomized documents based on content retrieved from Wikipedia with paraphrasing. The generated documents may be used in various instances, most notably for uploading to CourseHero as study materials.
 
 ## Installation
 
@@ -24,6 +24,8 @@ xcode-select --install
 
 ## Usage
 
+When executed with no further arguments, the program will generate one batch of documents with randomized pages from Wikipedia.
+
 ```bash
 usage: generate_documents.py [-h] [-t TITLE] [-n NUMBER] [-b BATCH]
                              [-c CLASS_NAMES] [-s SENTENCES]
@@ -32,7 +34,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -t TITLE, --title TITLE
                         The wikipedia page title to use for generating
-                        documents (default: Machine Learning)
+                        documents (default: None)
   -n NUMBER, --number NUMBER
                         The number of documents to generate in a batch
                         (default: 10)
