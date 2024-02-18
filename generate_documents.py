@@ -85,6 +85,10 @@ def GenerateBatch(args, batch):
                 wiki_title = wikipedia.random(1)
             page = wikipedia.page(wiki_title, auto_suggest=False)
             print("The url for page is " + page.url)
+        except wikipedia.DisambiguationError as e:
+            wiki_title = random.choice(e.options)
+            page = wikipedia.page(wiki_title, auto_suggest=False)
+            print("Using first available suggestion. The url for page is " + page.url)
         except Exception as e:
             print("There was an error getting the page. Please try again.")
             print(e)
