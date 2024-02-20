@@ -25,7 +25,6 @@ def get_parser():
         "--title",
         help="The wikipedia page title to use for generating documents",
         type=str,
-        default="Machine Learning",
     )
     parser.add_argument(
         "-n",
@@ -82,8 +81,14 @@ def GenerateBatch(args, batch):
     generated = 0
     while generated < amt:
         try:
+            if not wiki_title:
+                wiki_title = wikipedia.random(1)
             page = wikipedia.page(wiki_title, auto_suggest=False)
             print("The url for page is " + page.url)
+        except wikipedia.DisambiguationError as e:
+            wiki_title = random.choice(e.options)
+            page = wikipedia.page(wiki_title, auto_suggest=False)
+            print("Using first available suggestion. The url for page is " + page.url)
         except Exception as e:
             print("There was an error getting the page. Please try again.")
             print(e)
