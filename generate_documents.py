@@ -174,7 +174,7 @@ def createDocument(text, title, folder, class_names, doc_no):
         + folder
         + "/"
         + f"{doc_no} "
-        + "".join(i for i in title.strip() if i not in r"\/:*?<>|")
+        + "".join(i for i in title.strip() if i not in "\/:*?<>|")
         + ".docx"
     )
 
